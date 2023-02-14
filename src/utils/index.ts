@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 
 export const isFalsy = (value: unknown) => (value === 0 ? false : !value);
-const c = () => {
-  let m = 3;
-};
 export const cleanObject = (object: object) => {
   //不建议改变传输对象
   // object.name = 123123
