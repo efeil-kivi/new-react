@@ -49,10 +49,14 @@
     "workerDirectory": "public"
   },
   "devDependencies": {
+    "envify": "^4.1.0",
     "eslint-config-prettier": "^8.6.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
-    "prettier": "2.8.4"
+    "prettier": "2.8.4",
+    "terser": "^5.16.3",
+    "terser-brunch": "^4.1.0",
+    "uglifyify": "^5.0.2"
   },
   "lint-staged": {
     "*.{js,css,md,ts,tsx}": "prettier --write"

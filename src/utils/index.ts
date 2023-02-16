@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { inflateRaw } from "zlib";
 
 export const isFalsy = (value: unknown) => (value === 0 ? false : !value);
 export const cleanObject = (object: object) => {
   //不建议改变传输对象
   // object.name = 123123
   const result = { ...object };
-  let a = 1;
   //遍历result 当value为空：删掉；
   Object.keys(result).forEach((key) => {
     // @ts-ignore
