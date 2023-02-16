@@ -6,6 +6,7 @@ import { cleanObject, useMount } from "utils";
 import qs from "qs";
 import { useDebounce } from "utils";
 import { useHttp } from "../../utils/http";
+import styled from "@emotion/styled";
 export const ProjectListScreen = () => {
   const [users, setUsers] = useState([]);
   const [param, setParam] = useState({
@@ -23,9 +24,13 @@ export const ProjectListScreen = () => {
     client("users").then(setUsers);
   });
   return (
-    <div>
+    <Container>
+      <h1>Project List</h1>
       <SearchPanel users={users} param={param} setParam={setParam} />
       <List users={users} list={list} />
-    </div>
+    </Container>
   );
 };
+const Container = styled.div`
+  padding: 3.2rem;
+`;

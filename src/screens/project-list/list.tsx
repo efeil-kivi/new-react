@@ -1,12 +1,14 @@
 import React from "react";
 import { User } from "./search-panel";
 import { Table } from "antd";
+import dayjs from "dayjs";
 interface project {
   id: string;
   name: string;
   personId: string;
   pin: boolean;
   organization: string;
+  created: number;
 }
 interface ListProps {
   list: project[];
@@ -34,8 +36,20 @@ export const List = ({ list, users }: ListProps) => {
           },
         },
         {
-          title: "name",
-          dataIndex: "name",
+          title: "organization",
+          dataIndex: "organization",
+        },
+        {
+          title: "created",
+          render(value, project) {
+            return (
+              <span>
+                {project.created
+                  ? dayjs(project.created).format("YYYY-MM-DD")
+                  : "no time"}
+              </span>
+            );
+          },
         },
       ]}
       dataSource={list}
