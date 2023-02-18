@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 
 export const isFalsy = (value: unknown) => (value === 0 ? false : !value);
-export const cleanObject = (object: object) => {
+export const isVoid = (value: unknown) =>
+  value === undefined || value === null || value === "";
+// let b:{[key: string]: unknown} = {}
+export const cleanObject = (object: { [key: string]: unknown }) => {
   //不建议改变传输对象
   // object.name = 123123
   const result = { ...object };
   //遍历result 当value为空：删掉；
   Object.keys(result).forEach((key) => {
-    // @ts-ignore
     const value = result[key];
-    if (isFalsy(value)) {
-      // @ts-ignore
+    if (isVoid(value)) {
       delete result[key];
     }
   });
@@ -19,6 +20,7 @@ export const cleanObject = (object: object) => {
 export const useMount = (callback: () => void) => {
   useEffect(() => {
     callback();
+    // eslint-disable-next-line
   }, []);
 };
 export const useDebounce = <T>(value: T, delay?: number) => {

@@ -17,6 +17,7 @@ const bootstrapUser = async () => {
   return user;
 };
 const AuthContext = React.createContext<
+  //在程序中由43行定义，能够被定义成AuthProvider中的函数
   | {
       user: User | null;
       login: (form: AuthForm) => Promise<void>;

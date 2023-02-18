@@ -1,25 +1,31 @@
 import React from "react";
 import { User } from "./search-panel";
-import { Table } from "antd";
+import { Table, TableProps } from "antd";
+import dayjs from "dayjs";
 interface project {
   id: string;
   name: string;
   personId: string;
   pin: boolean;
   organization: string;
+  created: number;
 }
-interface ListProps {
-  list: project[];
+interface ListProps extends TableProps<project> {
+  //extends TableProps<any> 方便以后传值
+  // list: project[];
   users: User[];
 }
-export const List = ({ list, users }: ListProps) => {
+export const List = ({ users, ...props }: ListProps) => {
+  //export const List = ({ list, users,isLodaing}: ListProps) => {
+  //list 被删除因为 extends TableProps<project>有了
   return (
     //table 根据datasource 推断columns 的类型
     <Table
       columns={[
+        //type为project
         {
           title: "name",
-          dataIndex: "name",
+          dataIndex: "name", //因为table为pj类型
           sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
@@ -34,11 +40,24 @@ export const List = ({ list, users }: ListProps) => {
           },
         },
         {
-          title: "name",
-          dataIndex: "name",
+          title: "organization",
+          dataIndex: "organization",
+        },
+        {
+          title: "created",
+          render(value, project) {
+            return (
+              <span>
+                {project.created
+                  ? dayjs(project.created).format("YYYY-MM-DD")
+                  : "no time"}
+              </span>
+            );
+          },
         },
       ]}
-      dataSource={list}
+      //dataSource={list} //定义了table为project类型
+      {...props} //代替了上面一行
     >
       {/*<thead>*/}
       {/*  <tr>*/}
