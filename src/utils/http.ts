@@ -57,7 +57,7 @@ export const useHttp = () => {
 // };
 // //Omit 实现
 // const  she888: Omit<Person, 'name'> = { age: "12"}           //correct
-// // const  she990: Omit<Person2, 'name'> = { name: '121'}   //error
+// const  she990: Omit<Person2, 'name'> = { name: '121'}   //error
 //   // Pick
 //   type Pick<T, K extends keyof T> = {
 //     [P in K] ?: T;
