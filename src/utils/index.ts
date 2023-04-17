@@ -43,3 +43,4 @@ export const useDebounce = <T>(value: T, delay?: number) => {
 //                首次return d -> const
 //此useEffect程序 第一次执行return d -> return() -> const -> return d(由于debounceValue变化所以返回)
 //               第二次执行return d -> return() -> const -> return d  ....
+export const resetRoute = () => (window.location.href = window.location.origin);

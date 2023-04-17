@@ -3,10 +3,30 @@ import React, { FormEvent } from "react";
 import { Button, Form, Input } from "antd";
 import { LongButton } from "./index";
 
-export const RegisterScreen = () => {
+export const RegisterScreen = ({
+  onError,
+}: {
+  onError: (error: Error) => void;
+}) => {
   const { register, user } = useAuth();
-  const handleSubmit = (values: { username: string; password: string }) => {
-    register(values).then();
+  const handleSubmit = async ({
+    cpassword,
+    ...values
+  }: {
+    username: string;
+    password: string;
+    cpassword: string;
+  }) => {
+    if (cpassword !== values.password) {
+      onError(new Error("verify two password are same!"));
+      return;
+    }
+    try {
+      await register(values);
+    } catch (e) {
+      // @ts-ignore
+      onError(e);
+    }
   };
 
   return (
@@ -20,10 +40,16 @@ export const RegisterScreen = () => {
         <Input placeholder={"username"} type="text" id="username" />
       </Form.Item>
       <Form.Item
-        name={"username"}
+        name={"password"}
         rules={[{ required: true, message: "please input password" }]}
       >
         <Input placeholder={"password"} type="password" id="password" />
+      </Form.Item>
+      <Form.Item
+        name={"cpassword"}
+        rules={[{ required: true, message: "please verify password" }]}
+      >
+        <Input placeholder={"verify password"} type="password" id="cpassword" />
       </Form.Item>
       <Form.Item>
         <LongButton htmlType={"submit"} type={"primary"}>

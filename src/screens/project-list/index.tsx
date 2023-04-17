@@ -2,13 +2,13 @@ import React from "react";
 import { SearchPanel } from "./search-panel";
 import { List, project } from "./list";
 import { useState } from "react";
-import { useMount } from "utils";
 import { useDebounce } from "utils";
-import { useHttp } from "../../utils/http";
 import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProject } from "../../utils/project";
 import { useUsers } from "../../utils/user";
+import { Helmet } from "react-helmet";
+import { useUrlQueryParam } from "../../utils/url";
 export const ProjectListScreen = () => {
   const { data: users } = useUsers();
   // const [users, setUsers] = useState([]);
@@ -16,10 +16,13 @@ export const ProjectListScreen = () => {
   // useMount(() => {
   //   client("users").then(setUsers);
   // });
-  const [param, setParam] = useState({
-    name: "",
-    personId: "",
-  });
+
+  // const [,setParam] = useState({
+  //   name: "",
+  //   personId: "",
+  // });
+  const [keys] = useState<("name" | "personId")[]>(["name", "personId"]);
+  const [param, setParam] = useUrlQueryParam(keys);
   // const [isLoading, setIsLoading] = useState(false);
   // const [error, setError] = useState<null | Error>(null);
   // const [list, setList] = useState([]);
@@ -43,6 +46,9 @@ export const ProjectListScreen = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>project list</title>
+      </Helmet>
       <h1>Project List</h1>
       <SearchPanel users={users || []} param={param} setParam={setParam} />
       {error ? (

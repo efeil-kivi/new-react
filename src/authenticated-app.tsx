@@ -5,39 +5,61 @@ import styled from "@emotion/styled";
 import { Row } from "./components/lib";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { Button, Dropdown, Menu } from "antd";
+import { Routes, Navigate, Route } from "react-router";
+import { BrowserRouter as Router } from "react-router-dom";
+import { ProjectScreen } from "./screens/project";
+import { resetRoute } from "./utils";
 export const AuthenticatedApp = () => {
-  const { logout } = useAuth();
   return (
     <Container>
-      <PageHeader between={true}>
-        <HeaderLeft gap={true}>
-          <SoftwareLogo width={"18rem"} color={"rgb(36,78,255)"} />
-          <h2>project</h2>
-          <h2>user</h2>
-          {/*<h2 as={"div"}>another</h2>*/}
-        </HeaderLeft>
-        <HeaderRight>
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item key={"logout"}>
-                  <Button type={"link"} href={""} onClick={logout}>
-                    logout
-                  </Button>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button type={"link"} onClick={(e) => e.preventDefault()}>
-              Hi, 213
-            </Button>
-          </Dropdown>
-        </HeaderRight>
-      </PageHeader>
+      <PageHeader />
       <Main>
-        <ProjectListScreen />
+        {/*<ProjectListScreen />*/}
+        <Router>
+          <Routes>
+            <Route path="/" element={<Navigate to="/projects" />} />
+            <Route path={"/projects"} element={<ProjectListScreen />} />
+            <Route
+              path={"/projects/:projectId/*"}
+              element={<ProjectScreen />}
+            />
+          </Routes>
+        </Router>
       </Main>
     </Container>
+  );
+};
+
+const PageHeader = () => {
+  const { logout } = useAuth();
+  return (
+    <Header between={true}>
+      <HeaderLeft gap={true}>
+        <Button type={"link"} onClick={resetRoute}>
+          <SoftwareLogo width={"18rem"} color={"rgb(36,78,255)"} />
+        </Button>
+        <h2>project</h2>
+        <h2>user</h2>
+        {/*<h2 as={"div"}>another</h2>*/}
+      </HeaderLeft>
+      <HeaderRight>
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item key={"logout"}>
+                <Button type={"link"} href={""} onClick={logout}>
+                  logout
+                </Button>
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <Button type={"link"} onClick={(e) => e.preventDefault()}>
+            Hi, 213
+          </Button>
+        </Dropdown>
+      </HeaderRight>
+    </Header>
   );
 };
 const Container = styled.div`
@@ -45,7 +67,7 @@ const Container = styled.div`
   grid-template-rows: 6rem 1fr 6rem;
   height: 100vh;
 `;
-const PageHeader = styled(Row)`
+const Header = styled(Row)`
   box-shadow: 0 0 5px rgba(60, 117, 0, 0.56);
   z-index: 1;
   padding: 3.2rem;

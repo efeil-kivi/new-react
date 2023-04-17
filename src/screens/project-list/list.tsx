@@ -2,6 +2,7 @@ import React from "react";
 import { User } from "./search-panel";
 import { Table, TableProps } from "antd";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 export interface project {
   id: string;
   name: string;
@@ -18,6 +19,7 @@ interface ListProps extends TableProps<project> {
 export const List = ({ users, ...props }: ListProps) => {
   //export const List = ({ list, users,isLodaing}: ListProps) => {
   //list 被删除因为 extends TableProps<project>有了
+
   return (
     //table 根据datasource 推断columns 的类型
     <Table
@@ -25,8 +27,11 @@ export const List = ({ users, ...props }: ListProps) => {
         //type为project
         {
           title: "name",
-          dataIndex: "name", //因为table为pj类型
+          // dataIndex: "name", //因为table为pj类型
           sorter: (a, b) => a.name.localeCompare(b.name),
+          render(value, project) {
+            return <Link to={`${String(project.id)}`}>{project.name}</Link>;
+          },
         },
         {
           title: "负责人",
