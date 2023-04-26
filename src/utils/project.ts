@@ -7,10 +7,12 @@ import { cleanObject } from "./index";
 export const useProject = (param?: Partial<project>) => {
   const { run, ...result } = useAsync<project[]>(); //代替上面三行
   const client = useHttp();
+  const fetchProjects = () =>
+    client("projects", { data: cleanObject(param || {}) });
   //由于用了泛型
   useEffect(() => {
     // setIsLoading(true);
-    run(client("projects", { data: cleanObject(param || {}) })); //代替了上1下7行。
+    run(fetchProjects(), { retry: fetchProjects }); //代替了上1下7行。
     // client("projects", { data: cleanObject(debouncedParam) })
     //   .then(setList)
     //   .catch(error =>{
@@ -20,4 +22,21 @@ export const useProject = (param?: Partial<project>) => {
     //   .finally(() => setIsLoading(false));
   }, [param]);
   return result;
+};
+
+export const useEditProject = () => {
+  const { run, ...asyncResult } = useAsync();
+  const clint = useHttp();
+  const mutate = (params: Partial<project>) => {
+    return run(
+      clint(`project/${params.id}`, {
+        data: params,
+        method: "PATCH",
+      })
+    );
+  };
+  return {
+    mutate,
+    ...asyncResult,
+  };
 };

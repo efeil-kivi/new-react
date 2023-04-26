@@ -24,6 +24,10 @@ export const useAsync = <D>(
     // a={...arr,name:"kkk"}
     // console.log(a)
   });
+  //useState 直接传入函数的含义是：惰性初始化；所以，要用useState 保存函数，不能直接传入函数
+  //https://codesandbox.io/s/blissful-water-230u4?file=/src/App.js
+  //https://www.youtube.com/watch?v=FM9LL_UUK34&list=PL5FIFxLsMtxTTxwZ3D86ymwUSZl7YR_Tr&index=46
+  const [retry, setRetry] = useState(() => () => {});
   const setData = (data: D) =>
     setState({
       data,
@@ -36,10 +40,18 @@ export const useAsync = <D>(
       state: "error",
       data: null,
     });
-  const run = (promise: Promise<D>) => {
+  const run = (
+    promise: Promise<D>,
+    runConfig?: { retry: () => Promise<D> }
+  ) => {
     if (!promise || !promise.then) {
       throw new Error("please input promise");
     }
+    setRetry(() => () => {
+      if (runConfig?.retry) {
+        run(runConfig?.retry(), runConfig);
+      }
+    });
     setState({ ...state, state: "loading" });
     return promise
       .then((data) => {
@@ -57,6 +69,7 @@ export const useAsync = <D>(
         return error;
       });
   };
+
   return {
     isIdle: state.state === "idle",
     isLoading: state.state === "loading",
@@ -65,6 +78,7 @@ export const useAsync = <D>(
     run,
     setData,
     setError,
+    retry,
     ...state,
   };
 };

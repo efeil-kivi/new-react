@@ -10,7 +10,7 @@ export const useUrlQueryParam = <K extends string>(keys: K[]) => {
         keys.reduce((prev, key: string) => {
           return { ...prev, [key]: searchParams.get(key) || "" };
         }, {} as { [key in K]: string }),
-      [searchParams, keys]
+      [searchParams]
     ),
     (params: Partial<{ [key in K]: unknown }>) => {
       //iterator: https://codesandbox.io/s/upbeat-wood-bum3j?file=/src/index.js
