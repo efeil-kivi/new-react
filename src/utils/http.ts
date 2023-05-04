@@ -1,6 +1,7 @@
 import qs from "qs";
 import { useAuth } from "../context/auth-context";
 import * as auth from "auth-provider";
+import { useCallback } from "react";
 const apiUrl = process.env.REACT_APP_API_URL;
 interface Config extends RequestInit {
   token?: string;
@@ -42,8 +43,11 @@ export const http = async (
 export const useHttp = () => {
   const { user } = useAuth();
   // utility types 这中 typeof 为ts静态的typeof--编译时用到 和js 中的typeof--动态的，运行时用到。
-  return (...[endpoint, config]: Parameters<typeof http>) =>
-    http(endpoint, { ...config, token: user?.token });
+  return useCallback(
+    (...[endpoint, config]: Parameters<typeof http>) =>
+      http(endpoint, { ...config, token: user?.token }),
+    [user?.token]
+  );
 };
 
 // interface Person{

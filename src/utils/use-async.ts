@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useMountedRef } from "./index";
 interface State<D> {
   error: Error | null;
   data: D | null;
@@ -24,51 +25,58 @@ export const useAsync = <D>(
     // a={...arr,name:"kkk"}
     // console.log(a)
   });
+  const mountedRef = useMountedRef();
   //useState 直接传入函数的含义是：惰性初始化；所以，要用useState 保存函数，不能直接传入函数
   //https://codesandbox.io/s/blissful-water-230u4?file=/src/App.js
   //https://www.youtube.com/watch?v=FM9LL_UUK34&list=PL5FIFxLsMtxTTxwZ3D86ymwUSZl7YR_Tr&index=46
   const [retry, setRetry] = useState(() => () => {});
-  const setData = (data: D) =>
-    setState({
-      data,
-      state: "success",
-      error: null,
-    });
-  const setError = (error: Error) =>
-    setState({
-      error,
-      state: "error",
-      data: null,
-    });
-  const run = (
-    promise: Promise<D>,
-    runConfig?: { retry: () => Promise<D> }
-  ) => {
-    if (!promise || !promise.then) {
-      throw new Error("please input promise");
-    }
-    setRetry(() => () => {
-      if (runConfig?.retry) {
-        run(runConfig?.retry(), runConfig);
+  const setData = useCallback(
+    (data: D) =>
+      setState({
+        data,
+        state: "success",
+        error: null,
+      }),
+    []
+  );
+  const setError = useCallback(
+    (error: Error) =>
+      setState({
+        error,
+        state: "error",
+        data: null,
+      }),
+    []
+  );
+  const run = useCallback(
+    (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
+      if (!promise || !promise.then) {
+        throw new Error("please input promise");
       }
-    });
-    setState({ ...state, state: "loading" });
-    return promise
-      .then((data) => {
-        setData(data);
-        return data;
-      })
-      .catch((error) => {
-        setError(error);
-
-        // console.log(initialConfig?.throwOnError,"throwOnError", config)
-        if (config.throwOnError) {
-          // console.log("throwOnError")
-          return Promise.reject(error);
+      setRetry(() => () => {
+        if (runConfig?.retry) {
+          run(runConfig?.retry(), runConfig);
         }
-        return error;
       });
-  };
+      setState((prevState) => ({ ...prevState, state: "loading" }));
+      return promise
+        .then((data) => {
+          if (mountedRef.current) setData(data);
+          return data;
+        })
+        .catch((error) => {
+          setError(error);
+
+          // console.log(initialConfig?.throwOnError,"throwOnError", config)
+          if (config.throwOnError) {
+            // console.log("throwOnError")
+            return Promise.reject(error);
+          }
+          return error;
+        });
+    },
+    [config.throwOnError, mountedRef, setData, setError]
+  );
 
   return {
     isIdle: state.state === "idle",

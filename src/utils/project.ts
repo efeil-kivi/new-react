@@ -1,14 +1,16 @@
 import { useAsync } from "./use-async";
 import { project } from "../screens/project-list/list";
 import { useHttp } from "./http";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { cleanObject } from "./index";
 
 export const useProject = (param?: Partial<project>) => {
   const { run, ...result } = useAsync<project[]>(); //代替上面三行
   const client = useHttp();
-  const fetchProjects = () =>
-    client("projects", { data: cleanObject(param || {}) });
+  const fetchProjects = useCallback(
+    () => client("projects", { data: cleanObject(param || {}) }),
+    [client, param]
+  );
   //由于用了泛型
   useEffect(() => {
     // setIsLoading(true);
@@ -20,7 +22,7 @@ export const useProject = (param?: Partial<project>) => {
     //     setError(error)
     //   })
     //   .finally(() => setIsLoading(false));
-  }, [param]);
+  }, [param, run, fetchProjects]);
   return result;
 };
 

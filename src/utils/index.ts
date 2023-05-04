@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const isFalsy = (value: unknown) => (value === 0 ? false : !value);
 export const isVoid = (value: unknown) =>
@@ -44,3 +44,18 @@ export const useDebounce = <T>(value: T, delay?: number) => {
 //此useEffect程序 第一次执行return d -> return() -> const -> return d(由于debounceValue变化所以返回)
 //               第二次执行return d -> return() -> const -> return d  ....
 export const resetRoute = () => (window.location.href = window.location.origin);
+
+/**
+ * 返回组件的挂载状态，如果没有挂载或者已经卸载，返回false;反之，返回true
+ */
+export const useMountedRef = () => {
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      //当组件卸载时调用
+      mountedRef.current = false;
+    };
+  });
+  return mountedRef;
+};
