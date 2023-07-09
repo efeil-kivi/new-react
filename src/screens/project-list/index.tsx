@@ -8,12 +8,14 @@ import { useProject } from "../../utils/project";
 import { useUsers } from "../../utils/user";
 import { Helmet } from "react-helmet";
 import { useProjectSearchParams } from "./util";
+import { useDispatch } from "react-redux";
+import { ButtonNoPadding } from "components/lib";
+import { projectListAction } from "./project-list.slice";
 
 //基本类型，可以放到依赖里；组件状态 is ok；非组件状态的对象，不可放到依赖
-export const ProjectListScreen = (prop: {
-  setProjectModalOpen: (isOpen: boolean) => void;
-}) => {
+export const ProjectListScreen = (props: { projectButton: JSX.Element }) => {
   const { data: users } = useUsers();
+  const dispatch = useDispatch();
   // const [users, setUsers] = useState([]);
   // const client = useHttp();
   // useMount(() => {
@@ -54,7 +56,12 @@ export const ProjectListScreen = (prop: {
       </Helmet>
       <Row justify="space-between">
         <h1>Project List</h1>
-        <Button onClick={() => prop.setProjectModalOpen(true)}>创建项目</Button>
+        {/* {props.projectButton} */}
+        <ButtonNoPadding
+          onClick={() => dispatch(projectListAction.openProjectModal())}
+        >
+          创建项目
+        </ButtonNoPadding>
       </Row>
       <Button onClick={retry}>retry</Button>
       <SearchPanel users={users || []} param={param} setParam={setParam} />
@@ -66,7 +73,7 @@ export const ProjectListScreen = (prop: {
         users={users || []}
         dataSource={list || []}
         loading={isLoading}
-        setProjectModalOpen={prop.setProjectModalOpen}
+        projectButton={props.projectButton}
       />
     </Container>
   );

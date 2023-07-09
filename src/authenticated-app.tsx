@@ -11,13 +11,25 @@ import { ProjectScreen } from "./screens/project";
 import { resetRoute } from "./utils";
 import { ProjectModal } from "./screens/project-list/project-model";
 import { ProjectPopover } from "./components/project-popover";
+import { useDispatch } from "react-redux";
+import { projectListAction } from "screens/project-list/project-list.slice";
 
 //prop drilling
 export const AuthenticatedApp = () => {
-  const [projectModalOpen, setProjectModalOpen] = useState(false);
+  const dispatch = useDispatch();
+  // const [projectModalOpen, setProjectModalOpen] = useState(false);
   return (
     <Container>
-      <PageHeader setProjectModalOpen={setProjectModalOpen} />
+      <PageHeader
+      // projectButton={
+      // <ButtonNoPadding
+      //   onClick={() => setProjectModalOpen(true)}
+      //   type={"link"}
+      // >
+      //   创建项目
+      // </ButtonNoPadding>
+      // }
+      />
       {/*<Button onClick={()=>setProjectModalOpen(true)} >打开</Button>*/}
       <Main>
         {/*<ProjectListScreen />*/}
@@ -27,7 +39,18 @@ export const AuthenticatedApp = () => {
             <Route
               path={"/projects"}
               element={
-                <ProjectListScreen setProjectModalOpen={setProjectModalOpen} />
+                <ProjectListScreen
+                  projectButton={
+                    <ButtonNoPadding
+                      onClick={() =>
+                        dispatch(projectListAction.openProjectModal())
+                      }
+                      type={"link"}
+                    >
+                      创建项目
+                    </ButtonNoPadding>
+                  }
+                />
               }
             />
             <Route
@@ -38,49 +61,51 @@ export const AuthenticatedApp = () => {
         </Router>
       </Main>
       <ProjectModal
-        projectModelOpen={projectModalOpen}
-        onClose={() => {
-          setProjectModalOpen(false);
-        }}
+      // projectModelOpen={projectModalOpen}
+      // onClose={() => {
+      //   setProjectModalOpen(false);
+      // }}
       />
     </Container>
   );
 };
 
-const PageHeader = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void;
-}) => {
-  const { logout } = useAuth();
-  return (
-    <Header between={true}>
-      <HeaderLeft gap={true}>
-        <ButtonNoPadding type={"link"} onClick={resetRoute}>
-          <SoftwareLogo width={"18rem"} color={"rgb(36,78,255)"} />
-        </ButtonNoPadding>
-        <ProjectPopover setProjectModalOpen={props.setProjectModalOpen} />
-        <span>user</span>
-        {/*<h2 as={"div"}>another</h2>*/}
-      </HeaderLeft>
-      <HeaderRight>
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item key={"logout"}>
-                <Button type={"link"} href={""} onClick={logout}>
-                  logout
-                </Button>
-              </Menu.Item>
-            </Menu>
-          }
-        >
-          <Button type={"link"} onClick={(e) => e.preventDefault()}>
-            Hi, 213
-          </Button>
-        </Dropdown>
-      </HeaderRight>
-    </Header>
-  );
-};
+const PageHeader = () =>
+  // props: { projectButton: JSX.Element
+  {
+    const logout = () => console.log("logout");
+    return (
+      <Header between={true}>
+        <HeaderLeft gap={true}>
+          <ButtonNoPadding type={"link"} onClick={resetRoute}>
+            <SoftwareLogo width={"18rem"} color={"rgb(36,78,255)"} />
+          </ButtonNoPadding>
+          <ProjectPopover
+          // {...props}
+          />
+          <span>user</span>
+          {/*<h2 as={"div"}>another</h2>*/}
+        </HeaderLeft>
+        <HeaderRight>
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item key={"1"}>
+                  <Button type={"link"} href={""} onClick={() => logout}>
+                    logout
+                  </Button>
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <Button type={"link"} onClick={(e) => e.preventDefault()}>
+              Hi, 213
+            </Button>
+          </Dropdown>
+        </HeaderRight>
+      </Header>
+    );
+  };
 const Container = styled.div`
   display: grid;
   grid-template-rows: 6rem 1fr 6rem;

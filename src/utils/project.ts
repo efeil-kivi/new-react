@@ -5,7 +5,7 @@ import { useCallback, useEffect } from "react";
 import { cleanObject } from "./index";
 
 export const useProject = (param?: Partial<project>) => {
-  const { run, ...result } = useAsync<project[]>(); //代替上面三行
+  const { run, ...result } = useAsync<project[]>();
   const client = useHttp();
   const fetchProjects = useCallback(
     () => client("projects", { data: cleanObject(param || {}) }),
